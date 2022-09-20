@@ -16,8 +16,8 @@ app.get("/1", (req, res) => {
 })
 
 const stateKey = "spotify_auth_state";
-const client_id = "69d25c690d5b4a00ab63d45e015b5567";
-const client_secret = "3423c76717d44543bf75897cf919fde4";
+const client_id = "id";
+const client_secret = "secret";
 const redirect_uri = "http://localhost:3000/queue";
 
 app.post("/token", async (req, res) => {

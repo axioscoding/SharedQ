@@ -44,12 +44,12 @@ export default {
   ],
 
   privateRuntimeConfig: {
-    client_secret: "3423c76717d44543bf75897cf919fde4"
+    client_secret: "secret"
   },
 
   publicRuntimeConfig: {
     redirect_uri: "http://localhost:3000/callback",
-    client_id: "69d25c690d5b4a00ab63d45e015b5567"
+    client_id: "id"
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
