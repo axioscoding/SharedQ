@@ -1,18 +1,25 @@
 import axios from "axios"
 
 export const state = () => ({
-    token: null
+    token: null,
+    session_id: null
 })
 
 export const getters = {
     getToken(state) {
         return state.token
+    },
+    getSessionId(state){
+        return state.session_id
     }
 }
 
 export const mutations = {
     setToken(state, token){
         state.token = token
+    },
+    setSessionId(state, id){
+        state.session_id = id
     }
 }
 
@@ -25,6 +32,12 @@ export const actions = {
         console.log(res.data)
         commit("setToken", res.data.access_token);
         return res.data.access_token
+    },
+    async createSession({commit}){
+        const res = await axios.post("http://localhost:3000/api/session")
+        console.log(res.data)
+        commit("setSessionId", res.data.id)
+        return res.data.id
     },
     async searchSpotify({state}, searchString){
         console.log(searchString);

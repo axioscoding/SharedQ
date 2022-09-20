@@ -4,12 +4,11 @@
             <v-card-title class="justify-center font-weight-bold black--text text-h5">New Queue</v-card-title>
             <v-card-text class="black--text text-center font-weight-normal grey--text text--darken-3 text-body-1">Log into your spotify account to start a new shared queue.</v-card-text>
         </v-card>
-        <v-btn elevation="10" tile outlined block color="light-green" class="ma-0 py-8 px-10 text-button" large v-on:click="spotifyLogin" >Let's go!</v-btn>
+        <v-btn elevation="10" tile outlined block color="light-green" class="ma-0 py-8 px-10 text-button" large @click="spotifyLogin" >Spotify Login</v-btn>
     </div>
 </template>
 
 <script>
-import axios from "axios";
 export default {
     
     methods: {

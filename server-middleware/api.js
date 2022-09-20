@@ -2,6 +2,7 @@ const bodyParser = require("body-parser")
 const app = require("express")()
 const cors = require("cors")
 const axios = require("axios")
+const nanoid = require("nanoid")
 
 app.use(bodyParser.json())
 const corsOptions = {
@@ -36,6 +37,19 @@ app.post("/token", async (req, res) => {
         res.status(400).json("failed")
     })
     
+
+})
+
+
+app.post("/session", async (req, res) => {
+
+    //TODO
+    //insert into database
+
+    const id = nanoid.customAlphabet("0123456789", 6)()
+    
+    console.log(id)
+    res.status(200).json({id})
 
 })
 
