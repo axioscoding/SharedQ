@@ -9,3 +9,9 @@ export default {
   name: 'DefaultLayout',
 }
 </script>
+
+<style scoped>
+.html {
+  background-color: black;
+}
+</style>

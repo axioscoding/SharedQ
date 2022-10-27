@@ -32,10 +32,6 @@ export default {
     '@nuxtjs/vuetify',
   ],
 
-  serverMiddleware: [
-    { path: "/api", handler: "~/server-middleware/api.js" },
-  ],
-
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
@@ -43,13 +39,10 @@ export default {
     'cookie-universal-nuxt',
   ],
 
-  privateRuntimeConfig: {
-    client_secret: "secret"
-  },
-
   publicRuntimeConfig: {
-    redirect_uri: "http://localhost:3000/callback",
-    client_id: "id"
+    redirect_uri: process.env.REDIRECT_URI || '/queue',
+    baseURL: process.env.BASE_URL || 'http://localhost:3000'
+
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -58,7 +51,6 @@ export default {
     baseURL: '/',
 
   },
-
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],

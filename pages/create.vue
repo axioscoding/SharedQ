@@ -1,21 +1,31 @@
 <template>
     <div class="d-flex flex-column justify-center align-center ma-auto px-3">
-        <v-card elevation="2" dark outlined tile class="light-green">
-            <v-card-title class="justify-center font-weight-bold black--text text-h5">New Queue</v-card-title>
-            <v-card-text class="black--text text-center font-weight-normal grey--text text--darken-3 text-body-1">Log into your spotify account to start a new shared queue.</v-card-text>
+        <div class="d-flex flex-row" style="position: absolute; top: 12vh;">
+      <img src="../assets/logo3.svg" width="70" height="70">
+      <p class="text-h3 ma-0 pa-0 mt-4 ml-5" style="color:#1ed760;">SharedQ</p>
+    </div>
+        <v-card elevation="0" dark class="py-3" style="border-radius: 10px" color="#181818">
+            <v-card-title class="justify-center font-weight-bold white--text text-h5 mb-3">New Queue</v-card-title>
+            <v-card-text class="black--text text-left font-weight-normal grey--text text--lighten-1 text-body-1 mb"><p class="pa-0 ma-0 mb-2">1. Connect with spotify</p> <p class="pa-0 ma-0 mb-2">2. Name and Share your Queue</p> <p class="pa-0 ma-0 mb-2">3. Start your party!</p>  </v-card-text>
         </v-card>
-        <v-btn elevation="10" tile outlined block color="light-green" class="ma-0 py-8 px-10 text-button" large @click="spotifyLogin" >Spotify Login</v-btn>
+        <v-btn elevation="0" tile color="white" class="mx-1 align-self-stretch py-7 mt-8" style="border-radius: 50px; color: black; font-weight: bold;" large @click="spotifyLogin">Connect to Spotify</v-btn>
     </div>
 </template>
 
 <script>
 export default {
-    
+    name: 'CreatePage',
+    head(){
+        return{
+            title: "Create a Session"
+        }
+    },
     methods: {
         spotifyLogin(event){
             let resString = "response_type=code&client_id=69d25c690d5b4a00ab63d45e015b5567&scope=user-read-private+user-read-email+streaming+app-remote-control+user-read-playback-state+user-modify-playback-state+user-read-currently-playing+user-top-read";
-            resString += "&redirect_uri=http://localhost:3000/queue";
+            resString += "&redirect_uri=http://192.168.178.34:3000/queue"
             resString += "&state=" + this.generateRandomString(16)
+            console.log(resString)
             window.location.href = 'https://accounts.spotify.com/authorize?' + resString;
         }, generateRandomString(length) {
             let text = '';
