@@ -1,5 +1,7 @@
 import axios from "axios"
 
+const server_ip = "http://192.168.178.34:3001";
+
 export const state = () => ({
     session_id: null,
     queue: [],
@@ -76,7 +78,7 @@ export const actions = {
         const body = {
             code
         }
-        const res = await axios.post("http://192.168.178.34:3001/api/token", body)
+        const res = await axios.post(`${server_ip}/api/token`, body)
         return {auth_token: res.data.access_token, refresh_token: res.data.refresh_token}
     },
     async createSession({commit}, {auth_token, refresh_token}){
@@ -84,7 +86,7 @@ export const actions = {
             auth_token,
             refresh_token
         }
-        const res = await axios.post("http://192.168.178.34:3001/api/session", body)
+        const res = await axios.post(`${server_ip}/api/session`, body)
         commit("setSessionId", res.data.session_id)
         return res.data.session_id
     },
@@ -92,7 +94,7 @@ export const actions = {
         console.log(payload)
         
         return new Promise((resolve, reject) => {
-            axios.get("http://192.168.178.34:3001/api/search?" + new URLSearchParams({query: payload.searchString, session_id: payload.session_id})).then(res => {
+            axios.get(`${server_ip}/api/search?` + new URLSearchParams({query: payload.searchString, session_id: payload.session_id})).then(res => {
                 resolve(res.data)
             }).catch(err => {
                 console.log("ERROR1")
@@ -122,7 +124,7 @@ export const actions = {
         console.log("RERRR")
         console.log(session_id)
         return new Promise((resolve, reject) => {
-            axios.post("http://192.168.178.34:3001/api/refresh", {session_id}).then(res => {
+            axios.post(`${server_ip}/api/refresh`, {session_id}).then(res => {
                 console.log("ERROR8")
                 resolve(res)
             }).catch(err => {
@@ -134,7 +136,7 @@ export const actions = {
     async addQueueItem({state, commit}, payload){
 
         return new Promise((resolve, reject) => {
-            axios.post("http://192.168.178.34:3001/api/queue", {session_id: payload.session_id, song_uri: payload.song_uri,
+            axios.post(`${server_ip}/api/queue`, {session_id: payload.session_id, song_uri: payload.song_uri,
              song_id: payload.song_id , name: payload.name, artist: payload.artist, id: payload.id}).then(res => {
                 resolve(true)
             }).catch(err => {
@@ -149,7 +151,7 @@ export const actions = {
     },
     async nextSong({commit}, payload){
         return new Promise((resolve, reject) => {
-            axios.post("http://192.168.178.34:3001/api/queue/next", {session_id: payload.session_id}).then(res => {
+            axios.post(`${server_ip}/api/queue/next`, {session_id: payload.session_id}).then(res => {
                 commit("setNextSong", payload.song)
                 resolve(res.data.uri)
             }).catch(err => {
@@ -197,12 +199,12 @@ export const actions = {
         
         //commit("setVoteState", {index, vote_state, id})
         //commit("voteQueueItem", {index, amount})
-        axios.post("http://192.168.178.34:3001/api/vote", {session_id, song_id: song.song_id, amount, id, vote_state: (action < 3 ? true : false)})
+        axios.post(`${server_ip}/api/vote`, {session_id, song_id: song.song_id, amount, id, vote_state: (action < 3 ? true : false)})
     },
     restoreSession({commit, state}, session_id){
         console.log(session_id)
         return new Promise((resolve, reject) => {
-            axios.get("http://192.168.178.34:3001/api/queue?session_id=" + session_id).then(res => {
+            axios.get(`${server_ip}/api/queue?session_id=` + session_id).then(res => {
                 console.log(res.data)
                 const {queue, next_song, qrcode} = res.data
                 commit("setQueue", queue)
@@ -211,16 +213,6 @@ export const actions = {
             }).catch(err => {
                 console.log(err.response)
                 reject(false)
-            })
-        })
-    },
-    getQrCode({state}, session_id){
-        return new Promise((resolve, reject) => {
-            axios.get("http://192.168.178.34:3001/api/qrcode?session_id=" + session_id).then(res => {
-                resolve(res.data.url)
-            }).catch(err => {
-                console.log(err)
-                reject(null)
             })
         })
     }

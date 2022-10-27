@@ -71,7 +71,7 @@ export default {
       
   },
   methods: {
-      ...mapActions(["fetchToken", "createSession", "getQrCode"]),
+      ...mapActions(["fetchToken", "createSession"]),
       ...mapGetters(["getSessionId"]),
       ...mapMutations(["setSessionId"]),
       copyLink(){
@@ -88,7 +88,7 @@ export default {
     
     if(this.redir) this.$router.push(this.redir_link)
     else {
-        this.title = "Your shared Queue"   
+        this.title = "Name & Share your Queue"   
     }
     
 

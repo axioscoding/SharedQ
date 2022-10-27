@@ -17,7 +17,7 @@ export default {
     name: 'CreatePage',
     head(){
         return{
-            title: "Create a Session"
+            title: "Create a Queue"
         }
     },
     methods: {
