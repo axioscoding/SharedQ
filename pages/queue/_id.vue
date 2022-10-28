@@ -33,6 +33,9 @@
                         :songName="next_song.name" :songArtist="next_song.artist" :songDuration="next_song.duration_ms" :songVotes="next_song.votes"
                     />
                 </div>
+                <div class="d-flex" v-else>
+                    <p class="text-h5 grey--text mx-auto mt-12 font-weight-bold">Add a song to get started!</p>
+                </div>
             </div>
 
             <!-- Queue items -->
@@ -129,8 +132,11 @@ export default {
         const {queue, next_song, qrcode} = await this.restoreSession(this.sessionId)
         this.next_song = next_song
         this.qrcode = qrcode;
-        if(this.next_song !== null)
+        if(next_song === null){
+            this.showNextSong = false
+        }else{
             this.showNextSong = true
+        }
 
     },
     methods: {
@@ -171,15 +177,27 @@ export default {
                     clearTimeout(this.tm)
                 }else if(JSON.parse(event.data).update){
                     console.log("update")
-                    const {queue, next_song} = await this.restoreSession(this.sessionId)
+                    const {next_song} = await this.restoreSession(this.sessionId)
+                    
+                    if(next_song === null){
+                        this.showNextSong = false
+                    }else{
+                        this.showNextSong = true
+                    }
                     this.next_song = next_song
+                    
                 }
                     
             }
             this.socket.onopen = async (event) => {
                 console.log("OPEN")
                 if(this.disconnected){
-                    const {queue, next_song} = await this.restoreSession(this.sessionId)
+                    const {next_song} = await this.restoreSession(this.sessionId)
+                    if(next_song === null){
+                        this.showNextSong = false
+                    }else{
+                        this.showNextSong = true
+                    }
                     this.next_song = next_song
                 }else{
                     this.tm2 = setInterval(this.ping, 20000)
@@ -203,43 +221,34 @@ export default {
         async checkResume(){
             let now = new Date().getTime();
             if(now - this.lastTime > 4000){
-                const {queue, next_song} = await this.restoreSession(this.sessionId)
+                const {next_song} = await this.restoreSession(this.sessionId)
+                if(next_song === null){
+                    this.showNextSong = false
+                }else{
+                    this.showNextSong = true
+                }
                 this.next_song = next_song
             }
             this.lastTime = now
         },
         async addSongToQueue(song){
-            this.addQueueItem({session_id: this.sessionId, song_uri: song.uri, song_id: song.id,name: song.name, artist: song.artists[0].name, id: this.id}).then(res => {
-                if(this.getQueue().length === 0 && this.next_song === null){
-                    const nSong = {
-                        uri: song.uri,
-                        name: song.name,
-                        artist: song.artists[0].name,
-                        img: song.album.images[0].url,
-                        duration_ms: song.duration_ms,
-
-                    }
-                    const payload = {
-                        session_id: this.sessionId,
-                        song: nSong
-                    }
-                    this.nextSong(payload).then(res2 => {
-                        this.next_song = this.getNextSong()
-                        this.showNextSong = true
-                    }).catch(err2 => {
-
-                    })
-
+            this.addQueueItem({session_id: this.sessionId, song_id: song.id, id: this.id}).then(async res => {
+                const {next_song} = await this.restoreSession(this.sessionId)
+                if(next_song === null){
+                    this.showNextSong = false
                 }else{
-                    const upvoted = {}
-                    upvoted[this.id] = false
-                    const downvoted = {}
-                    downvoted[this.id] = false
-                    this.addToQueue({song_uri: song.uri, song_id: song.id, name: song.name, artist: song.artists[0].name,
-                         img: song.album.images[0].url, duration_ms: song.duration_ms, votes: 0, upvoted, downvoted})
+                    this.showNextSong = true
                 }
+                this.next_song = next_song
                 this.snackbarSongAdded = true
-            }).catch(err => {
+            }).catch(async err => {
+                const {next_song} = await this.restoreSession(this.sessionId)
+                if(next_song === null){
+                    this.showNextSong = false
+                }else{
+                    this.showNextSong = true
+                }
+                this.next_song = next_song
                 this.snackbarExistingSong = true
             })
             

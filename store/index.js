@@ -136,8 +136,7 @@ export const actions = {
     async addQueueItem({state, commit}, payload){
 
         return new Promise((resolve, reject) => {
-            axios.post(`${server_ip}/api/queue`, {session_id: payload.session_id, song_uri: payload.song_uri,
-             song_id: payload.song_id , name: payload.name, artist: payload.artist, id: payload.id}).then(res => {
+            axios.post(`${server_ip}/api/queue/add`, {session_id: payload.session_id, song_id: payload.song_id, id: payload.id}).then(res => {
                 resolve(true)
             }).catch(err => {
                 reject(false)
@@ -204,7 +203,7 @@ export const actions = {
     restoreSession({commit, state}, session_id){
         console.log(session_id)
         return new Promise((resolve, reject) => {
-            axios.get(`${server_ip}/api/queue?session_id=` + session_id).then(res => {
+            axios.get(`${server_ip}/api/session?session_id=` + session_id).then(res => {
                 console.log(res.data)
                 const {queue, next_song, qrcode} = res.data
                 commit("setQueue", queue)
