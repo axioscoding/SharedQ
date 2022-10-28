@@ -81,6 +81,33 @@ export const actions = {
         const res = await axios.post(`${server_ip}/api/token`, body)
         return {auth_token: res.data.access_token, refresh_token: res.data.refresh_token}
     },
+    changeSessionName({commit}, {session_id, name}){
+        console.log("CHANGE SESSION NAME")
+        console.log(name)
+        const body = {
+            session_id,
+            name
+        }
+        return new Promise((resolve, reject) => {
+            axios.post(`${server_ip}/api/session/name`, body).then(res => {
+                resolve()
+            }).catch(err => {
+                resolve()
+            })
+        })
+        
+    },
+    getSessionName({state}, session_id){
+        console.log("GET SESSION NAME ID")
+        console.log(session_id)
+        return new Promise((resolve, reject) => {
+            axios.get(`${server_ip}/api/session/name?` + new URLSearchParams({session_id})).then(res => {
+                resolve(res.data.name)
+            }).catch(err => {
+                reject("Your Shared Queue");
+            })
+        })
+    },
     async createSession({commit}, {auth_token, refresh_token}){
         const body = {
             auth_token,

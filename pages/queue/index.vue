@@ -15,7 +15,8 @@
           <v-text-field filled single-line rounded
           class="text-center centered-input mx-6 mt-10 my-0 py-0 pa-0 white--text custom-placeholer-color" color="white"
           dark ref="name_field" placeholder="Name your queue!"
-         
+          @submit="setName" @keydown.enter="setName" @click:append="setName"
+          :disabled="disabledText" v-model="nameString" maxlength="30" counter
           >
           </v-text-field>
 
@@ -33,7 +34,7 @@
         </div>
         <v-btn elevation="10" rounded block color="#1ED760" class="ma-0 mt-7 py-7 px-10 text-button" large @click="changeSite" >Let's party!</v-btn>
         <v-snackbar v-model="snackbar" :timeout="timeout">Copied to clipboard</v-snackbar>
-
+        <v-snackbar v-model="snackbarChangedName" :timeout="timeout">Name set!</v-snackbar>
         
       </div>
   </div>
@@ -52,6 +53,9 @@ export default {
           link_queue: process.env.baseURL + "/queue/",
           copy_icon: true,
           snackbar: false,
+          snackbarChangedName: false,
+          nameString: "",
+          disabledText: false,
           timeout: 2000
       }
   },  
@@ -71,7 +75,7 @@ export default {
       
   },
   methods: {
-      ...mapActions(["fetchToken", "createSession"]),
+      ...mapActions(["fetchToken", "createSession", "changeSessionName"]),
       ...mapGetters(["getSessionId"]),
       ...mapMutations(["setSessionId"]),
       copyLink(){
@@ -81,7 +85,21 @@ export default {
         this.snackbar = true
       },
       changeSite(){
-        this.$router.push("/queue/" + this.session_id)
+        if(this.nameString.length > 0){
+          this.changeSessionName({session_id: this.session_id, name: this.nameString}).then(res => {
+            this.$router.push("/queue/" + this.session_id)
+          }).catch(err => {
+            this.$router.push("/queue/" + this.session_id)
+          })
+        }else{
+          this.$router.push("/queue/" + this.session_id)
+        }
+        
+      },
+      setName(){
+        this.changeSessionName({session_id: this.session_id, name: this.nameString})
+        this.disabledText = true
+        this.snackbarChangedName = true
       }
   },
   mounted(){

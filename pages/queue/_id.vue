@@ -60,7 +60,7 @@
                 />
                 <!-- Share -->
                 <ShareOverlay @hide-overlay="hideOverlay"
-                    :value="shareOverlay" :sessionId="sessionId" :imgSrc="qrcode"
+                    :value="shareOverlay" :sessionId="sessionId" :imgSrc="qrcode" :sessionName="sessionName"
                 />
             </div>
 
@@ -86,6 +86,7 @@ export default {
             searchString: "",
             searchResults: [{name: "", duration_ms: 0, uri: "", artists: [{name: ""}], album: {images: [{url: ""}]}}],
             sessionId: this.$route.params.id,
+            sessionName: "Your Shared Queue",
             access_token: "",
             redir: false,
             redirLink: "",
@@ -140,7 +141,7 @@ export default {
 
     },
     methods: {
-        ...mapActions(["searchSpotify", "addQueueItem", "voteSong", "restoreSession"]),
+        ...mapActions(["searchSpotify", "addQueueItem", "voteSong", "restoreSession", "getSessionName"]),
         ...mapGetters(["getSessionId", "getQueue", "getNextSong"]),
         ...mapMutations(["setSessionId", "addToQueue", "removeFromQueue"]),
         async submitSearch(){
@@ -283,7 +284,9 @@ export default {
             }
             
         },
-        showShareOverlay(){
+        async showShareOverlay(){
+            const sessionName = await this.getSessionName(this.sessionId)
+            this.sessionName = sessionName
             this.shareOverlay = true
         }   
 
