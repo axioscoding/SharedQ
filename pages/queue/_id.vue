@@ -140,7 +140,7 @@ export default {
 
     },
     methods: {
-        ...mapActions(["searchSpotify", "addQueueItem", "nextSong", "voteSong", "restoreSession"]),
+        ...mapActions(["searchSpotify", "addQueueItem", "voteSong", "restoreSession"]),
         ...mapGetters(["getSessionId", "getQueue", "getNextSong"]),
         ...mapMutations(["setSessionId", "addToQueue", "removeFromQueue"]),
         async submitSearch(){

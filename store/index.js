@@ -148,16 +148,6 @@ export const actions = {
     async removeQueueItem({state, commit}, song_uri){
 
     },
-    async nextSong({commit}, payload){
-        return new Promise((resolve, reject) => {
-            axios.post(`${server_ip}/api/queue/next`, {session_id: payload.session_id}).then(res => {
-                commit("setNextSong", payload.song)
-                resolve(res.data.uri)
-            }).catch(err => {
-                reject(null)
-            })
-        })
-    },
     async voteSong({commit, state}, {song, action, index, session_id, id}){
         //UPVOTE WHEN BOTH CLEAR = 0
         //UPVOTE WHEN UPVOTE     = 1
