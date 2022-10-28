@@ -5,7 +5,8 @@ const server_ip = process.env.serverURL;
 export const state = () => ({
     session_id: null,
     queue: [],
-    next_song: null
+    next_song: null,
+    session_name: "Your Shared Queue"
 })
 
 export const getters = {
@@ -17,6 +18,9 @@ export const getters = {
     },
     getNextSong(state){
         return state.next_song
+    },
+    getLocalSessionName(state){
+        return state.session_name
     }
 }
 
@@ -70,6 +74,9 @@ export const mutations = {
                 state.queue[index].downvoted[id] = false
                 break
         }
+    },
+    setSessionName(state, name){
+        state.session_name = name
     }
 }
 
@@ -88,6 +95,7 @@ export const actions = {
             session_id,
             name
         }
+        commit("setSessionName", name)
         return new Promise((resolve, reject) => {
             axios.post(`${server_ip}/api/session/name`, body).then(res => {
                 resolve()

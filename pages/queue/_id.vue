@@ -71,6 +71,12 @@
 import {mapGetters, mapActions, mapMutations, mapState} from "vuex"
 import {nanoid} from "nanoid"
 export default {
+    name: 'QueuePage',
+    head(){
+        return{
+            title: this.sessionName
+        }
+    },
     watchQuery(query){
         if(typeof query.search === 'undefined'){
             if(this.searchDrawerExtended)
@@ -131,6 +137,9 @@ export default {
 
         this.sessionId = this.$route.params.id
         const {queue, next_song, qrcode} = await this.restoreSession(this.sessionId)
+        const sName = await this.getSessionName(this.sessionId)
+        this.sessionName = sName
+        this.setSessionName(sName)
         this.next_song = next_song
         this.qrcode = qrcode;
         if(next_song === null){
@@ -142,8 +151,8 @@ export default {
     },
     methods: {
         ...mapActions(["searchSpotify", "addQueueItem", "voteSong", "restoreSession", "getSessionName"]),
-        ...mapGetters(["getSessionId", "getQueue", "getNextSong"]),
-        ...mapMutations(["setSessionId", "addToQueue", "removeFromQueue"]),
+        ...mapGetters(["getSessionId", "getQueue", "getNextSong", "getLocalSessionName"]),
+        ...mapMutations(["setSessionId", "addToQueue", "removeFromQueue", "setSessionName"]),
         async submitSearch(){
             this.loadingTracks = true
             document.activeElement.blur()
@@ -285,8 +294,6 @@ export default {
             
         },
         async showShareOverlay(){
-            const sessionName = await this.getSessionName(this.sessionId)
-            this.sessionName = sessionName
             this.shareOverlay = true
         }   
 
