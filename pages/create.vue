@@ -23,7 +23,7 @@ export default {
     methods: {
         spotifyLogin(event){
             let resString = "response_type=code&client_id=69d25c690d5b4a00ab63d45e015b5567&scope=user-read-private+user-read-email+streaming+app-remote-control+user-read-playback-state+user-modify-playback-state+user-read-currently-playing+user-top-read";
-            resString += "&redirect_uri=http://192.168.178.34:3000/queue"
+            resString += "&redirect_uri=" + process.env.baseURL + process.env.redirect_uri
             resString += "&state=" + this.generateRandomString(16)
             console.log(resString)
             window.location.href = 'https://accounts.spotify.com/authorize?' + resString;

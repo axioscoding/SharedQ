@@ -49,7 +49,7 @@ export default {
           redir_link: "/create",
           title: "Loading",
           session_id: null,
-          link_queue: "http://192.168.178.34:3000/queue/",
+          link_queue: process.env.baseURL + "/queue/",
           copy_icon: true,
           snackbar: false,
           timeout: 2000

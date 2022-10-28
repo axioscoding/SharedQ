@@ -39,10 +39,24 @@ export default {
     'cookie-universal-nuxt',
   ],
 
-  publicRuntimeConfig: {
+  //PRODUCTION
+  /*
+  env:{
     redirect_uri: process.env.REDIRECT_URI || '/queue',
-    baseURL: process.env.BASE_URL || 'http://localhost:3000'
+    baseURL: process.env.BASE_URL || 'http://213.136.71.55',
+    server_port: process.env.SERVER_PORT || "3001",
+    serverURL: process.env.SERVER_URL || "http://213.136.71.55:3001",
+    websocketURL: process.env.WEBSOCKET_URL || "ws://213.136.71.55:3001"
+  },
+  */
 
+  //DEV
+  env:{
+    redirect_uri: '/queue',
+    baseURL: 'http://localhost:3000',
+    server_port: "3001",
+    serverURL: "http://localhost:3001",
+    websocketURL: "ws://localhost:3001"
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

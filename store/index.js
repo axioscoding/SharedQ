@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const server_ip = "http://192.168.178.34:3001";
+const server_ip = process.env.serverURL;
 
 export const state = () => ({
     session_id: null,
