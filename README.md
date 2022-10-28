@@ -1,4 +1,4 @@
-# spotifyapp1
+# SharedQ
 
 ## Build Setup
 
