@@ -64,7 +64,17 @@ export default {
       if(this.getSessionId() === null){
           if(this.$route.query.code){
               const {auth_token, refresh_token} = await this.fetchToken(this.$route.query.code)
-              this.session_id = await this.createSession({auth_token, refresh_token})
+              const sId = await this.createSession({auth_token, refresh_token})
+              this.session_id = sId
+
+              const cookie = this.$cookies.get('sharedq-host')
+              if(cookie === undefined){
+                  this.$cookies.set('sharedq-host', sId, {maxAge: 60*60*24*7*12})
+              }else{
+                  let host_ids = cookie
+                  host_ids += `.${sId}`
+                  this.$cookies.set('sharedq-host', host_ids, {maxAge: 60*60*24*7*12})
+              }
           }else{
               this.redir_link = "/queue/" + this.getSessionId()
               this.redir = true

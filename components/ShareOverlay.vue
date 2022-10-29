@@ -1,8 +1,8 @@
 <template>
         <v-overlay :value="value" opacity="0.90" @click="hide">
-                    
+            
             <div class="d-flex flex-column justify-center align-center">
-                
+                    
                 <div class="align-center" style="background-color: #181818; border-radius: 10px;" >
                     <div class="d-flex justify-end" style="width: 100%;">
                         <v-btn icon small class="align-self-end justify-self-end mt-3 mr-3 mb-0 pa-0"><v-icon>mdi-close-circle</v-icon></v-btn>

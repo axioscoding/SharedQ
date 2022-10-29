@@ -1,6 +1,7 @@
 <template>
   <div class="d-flex flex-column justify-center align-center ma-auto">
     <div class="d-flex flex-row" style="position: absolute; top: 12vh;">
+      
       <img src="../assets/logo3.svg" width="70" height="70">
       <p class="text-h3 ma-0 pa-0 mt-4 ml-5" style="color:#1ed760;">SharedQ</p>
     </div>

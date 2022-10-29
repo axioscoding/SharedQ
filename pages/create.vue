@@ -1,9 +1,9 @@
 <template>
     <div class="d-flex flex-column justify-center align-center ma-auto px-3">
         <div class="d-flex flex-row" style="position: absolute; top: 12vh;">
-      <img src="../assets/logo3.svg" width="70" height="70">
-      <p class="text-h3 ma-0 pa-0 mt-4 ml-5" style="color:#1ed760;">SharedQ</p>
-    </div>
+            <img src="../assets/logo3.svg" width="70" height="70">
+            <p class="text-h3 ma-0 pa-0 mt-4 ml-5" style="color:#1ed760;">SharedQ</p>
+        </div>
         <v-card elevation="0" dark class="py-3" style="border-radius: 10px" color="#181818">
             <v-card-title class="justify-center font-weight-bold white--text text-h5 mb-3">New Queue</v-card-title>
             <v-card-text class="black--text text-left font-weight-normal grey--text text--lighten-1 text-body-1 mb"><p class="pa-0 ma-0 mb-2">1. Connect with spotify</p> <p class="pa-0 ma-0 mb-2">2. Name and Share your Queue</p> <p class="pa-0 ma-0 mb-2">3. Start your party!</p>  </v-card-text>

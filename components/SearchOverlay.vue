@@ -1,6 +1,15 @@
 <template>
     <v-overlay :value="value" opacity="0.90" @click="hide">
-        <div style="overflow-y: scroll; max-height: 85vh; max-width: 100vw;" class="ma-auto">
+        <div class="d-flex flex-column justify-center align-center" v-if="loadingTracks">
+            <v-progress-circular
+                indeterminate
+                size="64"
+                ></v-progress-circular>
+        </div>
+        <div style="overflow-y: scroll; max-height: 85vh; max-width: 100vw;" class="ma-auto" v-else>
+            
+                <v-btn icon large class="" style="position: absolute; z-index: 15; right: 1vw; top: 0rem;" color="red"><v-icon>mdi-close-circle</v-icon></v-btn>
+            
             <div v-for="item in searchResults" :key="item.uri">
                 <v-btn @click="addSongToQueue(item)" style="height: 6rem; width: 100%; max-width: 100vw;" class="pa-4" tile>
                     <div class="d-flex flex-row align-stretch" style="width: 100%; max-width: 100vw; overflow: hidden;">
@@ -21,7 +30,7 @@
 import millisToMinutesAndSeconds from "../common/functions.js"
 export default {
     name: "SearchOverlay",
-    props: ["value", "searchResults"],
+    props: ["value", "searchResults", "loadingTracks"],
     methods: {
         millisToMinutesAndSeconds,
         hide(){

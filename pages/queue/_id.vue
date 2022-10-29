@@ -1,9 +1,19 @@
 <template>
     <div class="" style="overflow: hidden;">
-        <p v-if="$fetchState.pending">Loading...</p>
-        <p v-else-if="$fetchState.error">An Error Occurred</p>
+        <div v-if="$fetchState.pending" class="d-flex">
+            <v-progress-circular
+                indeterminate
+                size="64"
+                class="mx-auto mt-15"
+                ></v-progress-circular>
+        </div>
+        <div v-else-if="$fetchState.error" class="d-flex">
+            <p class="mx-auto mt-15 text-h4">An Error Occurred</p>
+        </div>
+        
         <!-- Main Page Content -->
         <div v-else class="d-flex flex-column justify-center my-auto mt-7" >
+            
             <div class="px-3 align-self-center" style="width: 100%; max-width: 50rem;">
                 <!-- Controls -->
                 <div class="d-flex flex-row justify-stretch">
@@ -20,7 +30,7 @@
                         clear-icon="mdi-close-circle" clearable @click:clear="clearInput" >
                     </v-text-field>
                     <!-- Settings Button -->
-                    <v-btn icon class="align-self-start mt-3 px-2 ml-4" color="white"  elevation="0">
+                    <v-btn icon class="align-self-start mt-3 px-2 ml-4" color="white"  elevation="0" v-if="host" @click="showSettingsOverlay">
                         <v-icon size="25">
                             mdi-cog
                         </v-icon>
@@ -56,11 +66,15 @@
             <div class="align-self-center">
                 <!-- Search -->
                 <SearchOverlay @hide-overlay="hideOverlay" @add-song="addSongToQueue"
-                    :value="searchDrawerExtended" :searchResults="searchResults"
+                    :value="searchDrawerExtended" :searchResults="searchResults" :loadingTracks="loadingTracks"
                 />
                 <!-- Share -->
                 <ShareOverlay @hide-overlay="hideOverlay"
                     :value="shareOverlay" :sessionId="sessionId" :imgSrc="qrcode" :sessionName="sessionName"
+                />
+                <!-- Settings -->
+                <SettingsOverlay @hide-overlay="hideOverlay"
+                    :value="settingsOverlay"
                 />
             </div>
 
@@ -98,6 +112,7 @@ export default {
             redirLink: "",
             loadingTracks: false,
             searchDrawerExtended: false,
+            settingsOverlay: false,
             snackbarExistingSong: false,
             snackbarSongAdded: false,
             showNextSong: false,
@@ -111,7 +126,8 @@ export default {
             tm: null,
             tm2: null,
             disconnected: false,
-            lastTime: 0
+            lastTime: 0,
+            validSession: true
 
         }
     },  
@@ -120,22 +136,40 @@ export default {
         return true
     },
     mounted(){
-        this.setupSocket()
-        setInterval(this.checkResume, 1000)
+        if(this.validSession){
+            this.setupSocket()
+            setInterval(this.checkResume, 1000)
+        }else{
+            this.$router.push("/missing")
+        }
+        
+        
     },
     created(){
         const cookie = this.$cookies.get('sharedq-id')
         if(cookie === undefined){
             const id = nanoid()
-            this.$cookies.set('sharedq-id', id, {maxAge: 60*60*24*7*4})
+            this.$cookies.set('sharedq-id', id, {maxAge: 60*60*24*7*12})
+            
             this.id = id
         }else{
             this.id = cookie
         }
+
+        
     },
     async fetch(){
 
-        this.sessionId = this.$route.params.id
+        const sId = this.$route.params.id
+        this.sessionId = sId
+        const cookie = this.$cookies.get('sharedq-host')
+        if(cookie !== undefined){
+            console.log(cookie.toString())
+            const host_ids = cookie.toString().split(".")
+            for(let i = 0; i < host_ids.length; i++){
+                if(host_ids[i] === sId) this.host = true
+            }
+        }
         const {queue, next_song, qrcode} = await this.restoreSession(this.sessionId)
         const sName = await this.getSessionName(this.sessionId)
         this.sessionName = sName
@@ -147,6 +181,7 @@ export default {
         }else{
             this.showNextSong = true
         }
+        
 
     },
     methods: {
@@ -155,6 +190,7 @@ export default {
         ...mapMutations(["setSessionId", "addToQueue", "removeFromQueue", "setSessionName"]),
         async submitSearch(){
             this.loadingTracks = true
+            this.searchDrawerExtended = true
             document.activeElement.blur()
             const payload = {
                 searchString: this.searchString,
@@ -163,7 +199,6 @@ export default {
             await this.searchSpotify(payload).then(results => {
                 this.searchResults = results.items
                 this.loadingTracks = false
-                this.searchDrawerExtended = true
                 document.documentElement.style.overflow = 'visible';
                 document.body.scroll = "no";
                 console.log(results.items)
@@ -174,6 +209,7 @@ export default {
         hideOverlay(){
             this.searchDrawerExtended = false
             this.shareOverlay = false
+            this.settingsOverlay = false
             document.documentElement.style.overflow = 'hidenn';
             document.body.scroll = "no";
             this.$router.push({query: {}})
@@ -226,7 +262,7 @@ export default {
             this.tm = setTimeout(() => {
                 this.disconnected = true
                 this.setupSocket()
-            }, 5000)
+            }, 10000)
         },
         async checkResume(){
             let now = new Date().getTime();
@@ -293,9 +329,12 @@ export default {
             }
             
         },
-        async showShareOverlay(){
+        showShareOverlay(){
             this.shareOverlay = true
-        }   
+        },
+        showSettingsOverlay(){
+            this.settingsOverlay = true
+        }
 
   },
 }

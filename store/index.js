@@ -236,7 +236,7 @@ export const actions = {
                 resolve({queue, next_song, qrcode})
             }).catch(err => {
                 console.log(err.response)
-                reject(false)
+                reject(err.response.data)
             })
         })
     }
