@@ -1,6 +1,7 @@
 import axios from "axios"
 
 const server_ip = process.env.serverURL;
+const baseURL = process.env.baseURL;
 
 export const state = () => ({
     session_id: null,
@@ -237,7 +238,17 @@ export const actions = {
             }).catch(err => {
                 console.log(err.response)
                 reject(err.response.data)
+                
             })
+        })
+    },
+    deleteQueue({commit}, session_id){
+        console.log(session_id);
+        axios.post(`${server_ip}/api/session/delete`, {session_id}).then(res => {
+            window.location.href = `${baseURL}/deleted`
+            console.log("SUCCESS!!!")
+        }).catch(err => {
+            console.log("ERRROOOORRR!!!")
         })
     }
 }

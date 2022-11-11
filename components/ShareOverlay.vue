@@ -8,7 +8,7 @@
                         <v-btn icon small class="align-self-end justify-self-end mt-3 mr-3 mb-0 pa-0"><v-icon>mdi-close-circle</v-icon></v-btn>
                     </div>
                     
-                <p class="black--text text-center font-weight-normal white--text text-h6 pb-1 mx-5 px-4 pt-0 mt-0">{{sessionName}}</p>
+                <p class="black--text text-center font-weight-bold white--text text-h5 pb-1 mx-5 px-4 pt-0 mt-0">{{sessionName}}</p>
                 
                 <v-img :src="imgSrc" max-height="10rem" max-width="10rem" class="align-self-center mx-auto mb-5" style="border-radius: 10px;"></v-img>
 

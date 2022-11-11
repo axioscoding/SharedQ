@@ -19,7 +19,7 @@
                 <div class="d-flex flex-row justify-stretch">
                     <!-- Share Button -->
                     <v-btn icon class="align-self-start mt-3 px-2 mr-4" color="white"  elevation="0" @click="showShareOverlay">
-                        <v-icon size="25">
+                        <v-icon size="25" class="pr-1">
                             mdi-share-variant
                         </v-icon>
                     </v-btn>
@@ -73,7 +73,7 @@
                     :value="shareOverlay" :sessionId="sessionId" :imgSrc="qrcode" :sessionName="sessionName"
                 />
                 <!-- Settings -->
-                <SettingsOverlay @hide-overlay="hideOverlay"
+                <SettingsOverlay @hide-overlay="hideOverlay" :sessionId="sessionId"
                     :value="settingsOverlay"
                 />
             </div>
@@ -84,6 +84,9 @@
 <script>
 import {mapGetters, mapActions, mapMutations, mapState} from "vuex"
 import {nanoid} from "nanoid"
+
+const baseURL = process.env.baseURL;
+
 export default {
     name: 'QueuePage',
     head(){
@@ -142,6 +145,10 @@ export default {
         }else{
             this.$router.push("/missing")
         }
+
+        if(this.$fetchState.error){
+            window.location.href = `${baseURL}/error`
+        }
         
         
     },
@@ -159,28 +166,32 @@ export default {
         
     },
     async fetch(){
-
-        const sId = this.$route.params.id
-        this.sessionId = sId
-        const cookie = this.$cookies.get('sharedq-host')
-        if(cookie !== undefined){
-            console.log(cookie.toString())
-            const host_ids = cookie.toString().split(".")
-            for(let i = 0; i < host_ids.length; i++){
-                if(host_ids[i] === sId) this.host = true
+        try {
+            const sId = this.$route.params.id
+            this.sessionId = sId
+            const cookie = this.$cookies.get('sharedq-host')
+            if(cookie !== undefined){
+                console.log(cookie.toString())
+                const host_ids = cookie.toString().split(".")
+                for(let i = 0; i < host_ids.length; i++){
+                    if(host_ids[i] === sId) this.host = true
+                }
             }
+            const {queue, next_song, qrcode} = await this.restoreSession(this.sessionId)
+            const sName = await this.getSessionName(this.sessionId)
+            this.sessionName = sName
+            this.setSessionName(sName)
+            this.next_song = next_song
+            this.qrcode = qrcode;
+            if(next_song === null){
+                this.showNextSong = false
+            }else{
+                this.showNextSong = true
+            }
+        } catch (error) {
+            window.location.href = `${baseURL}/error`
         }
-        const {queue, next_song, qrcode} = await this.restoreSession(this.sessionId)
-        const sName = await this.getSessionName(this.sessionId)
-        this.sessionName = sName
-        this.setSessionName(sName)
-        this.next_song = next_song
-        this.qrcode = qrcode;
-        if(next_song === null){
-            this.showNextSong = false
-        }else{
-            this.showNextSong = true
-        }
+        
         
 
     },
