@@ -6,8 +6,7 @@
       
       <div class="d-flex flex-column justify-center align-center" v-else>
         <div class="d-flex flex-row" style="position: absolute; top: 5vh;">
-          <img src="../../assets/logo3.svg" width="70" height="70">
-          <p class="text-h3 ma-0 pa-0 mt-4 ml-5" style="color:#1ed760;">SharedQ</p>
+          <img src="../../assets/logov3.svg" width="270" height="73" class="mt-md-7 mt-lg-7 mb-15">
         </div>
         <div class="align-center" style="background-color: #181818; border-radius: 10px;" >
           <p class="black--text text-center font-weight-normal white--text text-h6 pb-1 mx-5 px-4 pt-4 mt-5">Name & share your Queue</p>

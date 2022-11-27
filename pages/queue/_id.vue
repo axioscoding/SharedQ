@@ -50,7 +50,7 @@
 
             <!-- Queue items -->
             <div class="align-self-center d-flex flex-column px-3" style="width: 100%; max-width: 50rem; overflow: hidden;">
-                <div class="pt-5" style="overflow-y: auto; max-height: calc(100vh - 21em);" v-if="getQueue().length > 0">
+                <div class="pt-5" style="overflow-y: auto; max-height: calc(100vh - 17em);" v-if="getQueue().length > 0">
                     <QueueItem v-for="(item, index) in getQueue()" :key="item.uri" @upvote-song="upvoteSongUI" @downvote-song="downvoteSongUI"
                         :imageSrc="item.img" :songName="item.name" :songArtist="item.artist" :songDuration="item.duration_ms" :songVotes="item.votes"
                         :upvoted="item.upvoted[id.toString()]" :downvoted="item.downvoted[id.toString()]" :index="index" :song="item"
@@ -70,11 +70,11 @@
                 />
                 <!-- Share -->
                 <ShareOverlay @hide-overlay="hideOverlay"
-                    :value="shareOverlay" :sessionId="sessionId" :imgSrc="qrcode" :sessionName="sessionName"
+                    :value="shareOverlay" :sessionId="sessionId" :imgSrc="qrcode" :sessionName="sessionName" ref="shareOverlay"
                 />
                 <!-- Settings -->
                 <SettingsOverlay @hide-overlay="hideOverlay" :sessionId="sessionId"
-                    :value="settingsOverlay"
+                    :value="settingsOverlay" :maxvotes="maxvotes"
                 />
             </div>
 
@@ -130,7 +130,8 @@ export default {
             tm2: null,
             disconnected: false,
             lastTime: 0,
-            validSession: true
+            validSession: true,
+            maxvotes: -1
 
         }
     },  
@@ -177,8 +178,9 @@ export default {
                     if(host_ids[i] === sId) this.host = true
                 }
             }
-            const {queue, next_song, qrcode} = await this.restoreSession(this.sessionId)
+            const {queue, next_song, qrcode, maxvotes} = await this.restoreSession(this.sessionId)
             const sName = await this.getSessionName(this.sessionId)
+            this.maxvotes = maxvotes
             this.sessionName = sName
             this.setSessionName(sName)
             this.next_song = next_song
@@ -226,7 +228,7 @@ export default {
             this.$router.push({query: {}})
         },
         setupSocket(){
-            this.socket = new WebSocket(process.env.websocketURL)
+            this.socket = new WebSocket("wss://sharedq.com")
         
             this.socket.onmessage = async (event) => {
                 console.log(event.data)
@@ -345,6 +347,7 @@ export default {
         },
         showSettingsOverlay(){
             this.settingsOverlay = true
+            
         }
 
   },

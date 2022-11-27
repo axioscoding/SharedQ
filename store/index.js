@@ -7,7 +7,8 @@ export const state = () => ({
     session_id: null,
     queue: [],
     next_song: null,
-    session_name: "Your Shared Queue"
+    session_name: "Your Shared Queue",
+    maxvotes: -1
 })
 
 export const getters = {
@@ -231,10 +232,10 @@ export const actions = {
         return new Promise((resolve, reject) => {
             axios.get(`${server_ip}/api/session?session_id=` + session_id).then(res => {
                 console.log(res.data)
-                const {queue, next_song, qrcode} = res.data
+                const {queue, next_song, qrcode, maxvotes} = res.data
                 commit("setQueue", queue)
                 commit("setNextSongFull", next_song)
-                resolve({queue, next_song, qrcode})
+                resolve({queue, next_song, qrcode, maxvotes})
             }).catch(err => {
                 console.log(err.response)
                 reject(err.response.data)
@@ -246,6 +247,14 @@ export const actions = {
         console.log(session_id);
         axios.post(`${server_ip}/api/session/delete`, {session_id}).then(res => {
             window.location.href = `${baseURL}/deleted`
+            console.log("SUCCESS!!!")
+        }).catch(err => {
+            console.log("ERRROOOORRR!!!")
+        })
+    },
+    updateMaxDownvotes({commit}, {session_id, maxvotes}){
+        console.log(session_id);
+        axios.post(`${server_ip}/api/session/maxvotes`, {session_id, maxvotes}).then(res => {
             console.log("SUCCESS!!!")
         }).catch(err => {
             console.log("ERRROOOORRR!!!")

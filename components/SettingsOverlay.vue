@@ -18,10 +18,11 @@
             :max="4"
             step="1"
             color="#1ed760"
+            @end="changeMaxDownvotes"
           ></v-slider>
 
           <div class="d-flex justify-center align-center my-5 mb-10 mx-9 mt-10">
-              <v-btn id="button1" elevation="0" style="background-color: transparent; color: white; border: 2px solid white;" class="ma-0 pa-6 text-button mb-10" rounded @click="buttonEvent">{{this.buttonState === 1 ? 'Delete Queue?' : 'Are you sure?'}}<v-icon class="ml-3">mdi-delete-forever-outline</v-icon></v-btn>
+              <v-btn id="button1" elevation="0" style="background-color: transparent; color: white; border: 2px solid white;" class="ma-0 pa-6 text-button mb-10" v-bind:class="{btn_clicked: buttonClicked}" rounded @click="buttonEvent">{{this.buttonState === 1 ? 'Delete Queue?' : 'Are you sure?'}}<v-icon class="ml-3">mdi-delete-forever-outline</v-icon></v-btn>
           </div>
       </div>
   </v-overlay>
@@ -31,35 +32,62 @@
 import {mapActions} from "vuex"
 export default {
     name: "SettingsOverlay",
-    props: ["value", "sessionId"],
+    props: ["value", "sessionId", "maxvotes"],
     data(){
       return{
         buttonState: 1,
-        kickSongValue: 0,
+        buttonClicked: false,
+        kickSongValue:  this.computeMaxVotes(this.$props.maxvotes),
+        buttonColor: "white",
         ticksLabels: [
           "Off",
-          "2",
-          "3",
-          "5",
-          "10"
+          2,
+          3,
+          5,
+          10
         ]
       }
     },
     methods: {
-      ...mapActions(["deleteQueue"]),
+      ...mapActions(["deleteQueue", "updateMaxDownvotes"]),
+        computeMaxVotes(votes){
+          switch(votes){
+            case -1:
+              return 0;
+            case 2:
+              return 1;
+            case 3:
+              return 2;
+            case 5:
+              return 3;
+            case 10:
+              return 4;
+            default:
+              return 0;
+          }
+        },
         hide(){
+          this.buttonClicked = false;
           this.buttonState = 1;
             this.$emit("hide-overlay");
         },
         buttonEvent(){
           switch(this.buttonState){
             case 1:
+              this.buttonClicked = true;
               this.buttonState = 2
               break;
             case 2:
               this.deleteQueue(this.$props.sessionId);
               break;
             default:
+          }
+        },
+        changeMaxDownvotes(index){
+          if(index === 0){
+            this.updateMaxDownvotes({session_id: this.$props.sessionId, maxvotes: -1})
+          }else{
+            this.updateMaxDownvotes({session_id: this.$props.sessionId, maxvotes: this.ticksLabels[index]})
           }
         }
     }
@@ -76,6 +104,9 @@ export default {
   margin-top: 0.3em;
 }
 
+.btn_clicked{
+  background-color: #cc332b !important;
+}
 
 
 </style>

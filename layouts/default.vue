@@ -1,6 +1,7 @@
 <template>
   <v-app dark>
     <Nuxt />
+    <Footer></Footer>
   </v-app>
 </template>
 

@@ -10,7 +10,8 @@
                     
                 <p class="black--text text-center font-weight-bold white--text text-h5 pb-1 mx-5 px-4 pt-0 mt-0">{{sessionName}}</p>
                 
-                <v-img :src="imgSrc" max-height="10rem" max-width="10rem" class="align-self-center mx-auto mb-5" style="border-radius: 10px;"></v-img>
+                
+                <div id="qrcode" ref="qrcode" max-height="10rem" max-width="10rem" class="align-self-center mx-auto my-10 d-flex justify-center"></div>
 
                 <div class="ma-auto d-flex align-center px-5" style="max-width: 270px">
                     <v-otp-input dark length="6" type="number" color="#1ED760" class="pa-0 ma-0" disabled v-model="sessionId">
@@ -18,16 +19,20 @@
                     </v-otp-input>
                 </div>
                 <div class="d-flex justify-center align-center my-5 mb-10">
-                    <v-btn elevation="0" style="background-color: transparent; color: white; border: 2px solid white;" class="ma-0 pa-6 text-button" rounded click="copyLink">Copy Link<v-icon small class="ml-3">mdi-content-copy</v-icon></v-btn>
+                    <v-btn elevation="0" style="background-color: transparent; color: white; border: 2px solid white;" class="ma-0 pa-6 text-button" rounded @click="copyLink">Copy Link<v-icon small class="ml-3">mdi-content-copy</v-icon></v-btn>
                 </div>
                 </div>
-
+                <v-snackbar v-model="snackbar" :timeout="timeout">Copied to clipboard</v-snackbar>
                 
             </div>
         </v-overlay>
 </template>
 
 <script>
+
+const baseURL = process.env.baseURL;
+
+let QRCodeStyling, qrCode;
 
 export default {
     name: "ShareOverlay",
@@ -39,9 +44,49 @@ export default {
     },
     data(){
         return{
-            name: ""
+            name: "",
+            snackbar: false,
+            copy_icon: true
         }
-    }
+    },
+    async mounted(){
+            QRCodeStyling = await import('qr-code-styling')
+            console.log(baseURL + this.$route.path)
+            qrCode = new QRCodeStyling.default({
+                width: 200,
+                height: 200,
+                type: "svg",
+                data: baseURL + this.$route.path,
+                image: "/logov3.png",
+                dotsOptions: {
+                    color: "#1ed760",
+                    type: "dots"
+                },
+                cornersSquareOptions: {
+                    type: "extra-rounded"
+                },
+                cornersDotOptions: {
+                    type: "dot"
+                },
+                backgroundOptions: {
+                    color: "#181818"
+                },
+                imageOptions: {
+                    crossOrigin: "anonymous",
+                    margin: 7
+                }
+            })
+            qrCode.append(this.$refs.qrcode)
+    },
+    updated(){
+        qrCode.append(this.$refs.qrcode)
+    },
+    copyLink(){
+        console.log("COPY_LINK")
+        this.copy_icon = !this.copy_icon
+        navigator.clipboard.writeText(this.link_queue + this.session_id)
+        this.snackbar = true
+    },
 }
 </script>
 
