@@ -228,7 +228,8 @@ export default {
             this.$router.push({query: {}})
         },
         setupSocket(){
-            this.socket = new WebSocket("wss://sharedq.com")
+            const websocketURL = process.env.websocketURL;
+            this.socket = new WebSocket(websocketURL)
         
             this.socket.onmessage = async (event) => {
                 console.log(event.data)
