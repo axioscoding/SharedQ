@@ -2,6 +2,8 @@
 
 Web app to share a Spotify queue. Available under https://sharedq.com.
 
+Missing nuxt.config.js and .env for privacy reasons.
+
 ## Build Setup
 
 ```bash
