@@ -4,6 +4,8 @@ Web app to share a Spotify queue, made with Nuxt.js
 
 Available under https://sharedq.com.
 
+Code for the backend server: https://github.com/wittrockscode/SharedQ-Server
+
 Missing nuxt.config.js and .env for privacy reasons.
 
 ## Build Setup
