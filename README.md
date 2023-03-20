@@ -1,6 +1,6 @@
 # SharedQ
 
-Web app to share a Spotify queue, made with Nuxt.js
+Web app to share a Spotify queue, made with Nuxt.js + Websockets
 
 Available under https://sharedq.com.
 
